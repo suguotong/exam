@@ -1,7 +1,12 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html;charset=UTF-8" errorPage="error.jsp" pageEncoding="utf-8" %>
 <html>
     <!-- 公共头部 -->
-    <jsp:include page="head.jsp"/>
+    <head>
+        <title>数学考试</title>
+        <meta charset="UTF-8">
+        <script src="js/jquery-3.5.1.js"></script>
+        <script src="js/common.js"></script>
+    </head>
     <body>
         <form id="register">
             <h1 id="title">注册</h1>
@@ -41,33 +46,36 @@
             //表单校验
             if (user.username == "") {
                 alert("用户名不能为空");
-            } else if (user.password == "") {
-                alert("密码不能为空");
-            } else if (user.password != user.confirm_password) {
-                alert("两次密码不一致");
-            } else if (user.email == "") {
-                alert("邮箱不能为空");
-            } else if (user.phone == "") {
-                alert("电话不能为空");
-            } else {
-                //发送请求
-                /*$.post("register", {
-                        user: JSON.stringify(user)
-                    }, function (data) {
-                        console.log(data)
-                    }
-                )*/
-                $.ajax({
-                    url: "register",
-                    type: "post",
-                    data: {
-                        user: JSON.stringify(user)
-                    },
-                    success: function (data) {
-                        console.log(data)
-                    }
-                })
+                return false;
             }
+            if (user.password == "") {
+                alert("密码不能为空");
+                return false;
+            }
+            if (user.password != user.confirm_password) {
+                alert("两次密码不一致");
+                return false;
+            }
+            if (user.email == "") {
+                alert("邮箱不能为空");
+                return false;
+            }
+            if (user.phone == "") {
+                alert("电话不能为空");
+                return false;
+            }
+            $.post("register", {
+                    user: JSON.stringify(user)
+                }, function (data) {
+                    console.log(data);
+                    alert(data.msg);
+                    if (data.code === 0) {
+                        location.href = "login.jsp";
+                    } else {
+                        return false;
+                    }
+                }
+            )
         })
     </script>
 </html>

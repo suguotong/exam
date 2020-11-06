@@ -23,6 +23,7 @@ public class RegisterServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //返回值
         int code = -1;
+        String msg = "";
         //获取用户提交的信息
         String userJson = request.getParameter("user");
         User user = JsonUtil.parse2bean(userJson, User.class);
@@ -31,24 +32,25 @@ public class RegisterServlet extends HttpServlet {
         UserDao userDao = new UserDaoImpl();
         if (userDao.getUser(user.getUsername()) != null) {
             code = 2;
-            System.out.println("用户名已存在");
+            msg = "用户名已存在";
         } else {
             boolean i = userDao.saveUser(user);
             if (i) {
                 code = 0;
-                System.out.println("注册成功");
+                msg = "注册成功";
             } else {
                 code = 1;
-                System.out.println("注册失败");
+                msg = "注册失败";
             }
         }
+        System.out.println(msg);
         //返回前端保存结果
         PrintWriter writer = response.getWriter();
-        writer.write(code);
+        writer.write(JsonUtil.response(code, msg, null));
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        request.getRequestDispatcher("register.jsp").forward(request, response);
     }
 }
